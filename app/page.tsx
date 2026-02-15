@@ -69,11 +69,11 @@ export default function MasteryOS() {
         <div className="mt-auto space-y-4">
            <button 
             onClick={exportToCSV}
-            className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-zinc-900/50 border border-zinc-800 text-zinc-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all group"
+            className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 transition-all group"
           >
             <div className="flex items-center gap-4">
               <FileSpreadsheet size={18} />
-              <span className="text-xs font-bold uppercase tracking-wider">Export Log</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Export Spreadsheet</span>
             </div>
             <Download size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
@@ -108,10 +108,11 @@ export default function MasteryOS() {
           <div className="flex items-center gap-3">
             <button 
               onClick={exportToCSV}
-              className="md:hidden p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-emerald-500"
-              title="Export Log"
+              className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20 transition-all"
+              title="Export Spreadsheet"
             >
               <FileSpreadsheet size={20} />
+              <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Export</span>
             </button>
             <div className="flex items-center gap-3 bg-zinc-900/80 px-4 py-2 rounded-full border border-zinc-800">
               <Flame className={`w-5 h-5 ${streak > 0 ? 'text-orange-500 animate-pulse' : 'text-zinc-600'}`} />

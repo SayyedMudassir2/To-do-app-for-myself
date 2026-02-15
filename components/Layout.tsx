@@ -51,13 +51,14 @@ export const Layout: React.FC<LayoutProps> = ({ activeTab, onTabChange, children
           <NavItem id="focus" label="Deep Work" icon={Target} active={activeTab === 'focus'} onClick={onTabChange} />
           <NavItem id="identity" label="Identity" icon={User} active={activeTab === 'identity'} onClick={onTabChange} />
           
-          <div className="pt-4 mt-4 border-t border-zinc-900">
+          <div className="pt-6 mt-6 border-t border-zinc-900">
+            <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-3 px-3">Data Management</p>
             <button
               onClick={onExport}
-              className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 w-full text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/5 border border-transparent hover:border-emerald-500/20 group"
+              className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 w-full text-emerald-400 bg-emerald-500/5 border border-emerald-500/20 hover:bg-emerald-500/10 hover:border-emerald-500/40 group"
             >
               <FileSpreadsheet size={20} className="group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-medium">Export Log</span>
+              <span className="text-sm font-bold">Export Spreadsheet</span>
             </button>
           </div>
         </nav>
@@ -87,17 +88,18 @@ export const Layout: React.FC<LayoutProps> = ({ activeTab, onTabChange, children
           <div className="hidden md:block">
             <h2 className="text-xl font-bold capitalize">{activeTab}</h2>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
              <button 
                 onClick={onExport}
-                className="p-2 rounded-lg bg-zinc-900 text-emerald-500 border border-zinc-800 hover:bg-zinc-800"
-                title="Export Log"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all"
+                title="Export Spreadsheet"
              >
                <FileSpreadsheet size={18} />
+               <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Export</span>
              </button>
-             <div className="flex items-center gap-2 bg-zinc-900 rounded-full px-3 py-1 border border-zinc-800">
+             <div className="flex items-center gap-2 bg-zinc-900 rounded-full px-3 py-1.5 border border-zinc-800">
                <Flame size={16} className={streak > 0 ? "text-orange-500" : "text-zinc-600"} />
-               <span className="text-sm font-bold">{streak} Day Streak</span>
+               <span className="text-xs font-bold whitespace-nowrap">{streak} Day Streak</span>
              </div>
           </div>
         </header>

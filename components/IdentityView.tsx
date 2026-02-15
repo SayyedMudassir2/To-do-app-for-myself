@@ -40,24 +40,24 @@ export const IdentityView: React.FC<IdentityProps> = ({ profile, onUpdate }) => 
           title="Core Values" 
           icon={<Shield size={16} />} 
           items={profile.coreValues} 
-          onAdd={(v) => addToList('coreValues', v)} 
-          onRemove={(i) => removeFromList('coreValues', i)}
+          onAdd={(v: string) => addToList('coreValues', v)} 
+          onRemove={(i: number) => removeFromList('coreValues', i)}
           color="text-blue-500"
         />
         <IdentityBlock 
           title="Non-Negotiables" 
           icon={<Sword size={16} />} 
           items={profile.nonNegotiables} 
-          onAdd={(v) => addToList('nonNegotiables', v)} 
-          onRemove={(i) => removeFromList('nonNegotiables', i)}
+          onAdd={(v: string) => addToList('nonNegotiables', v)} 
+          onRemove={(i: number) => removeFromList('nonNegotiables', i)}
           color="text-emerald-500"
         />
         <IdentityBlock 
           title="Anti-Identity" 
           icon={<Ghost size={16} />} 
           items={profile.antiIdentity} 
-          onAdd={(v) => addToList('antiIdentity', v)} 
-          onRemove={(i) => removeFromList('antiIdentity', i)}
+          onAdd={(v: string) => addToList('antiIdentity', v)} 
+          onRemove={(i: number) => removeFromList('antiIdentity', i)}
           color="text-orange-500"
         />
       </div>
