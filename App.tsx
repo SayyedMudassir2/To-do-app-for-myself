@@ -7,7 +7,7 @@ import { Identity } from './components/Identity';
 import { useAppState } from './store';
 
 const App: React.FC = () => {
-  const { state, updateToday, getDayData, setTab, updateIdentity, today, streak } = useAppState();
+  const { state, updateToday, getDayData, setTab, updateIdentity, today, streak, exportToCSV } = useAppState();
 
   const renderContent = () => {
     switch (state.activeTab) {
@@ -23,7 +23,13 @@ const App: React.FC = () => {
   };
 
   return (
-    <Layout activeTab={state.activeTab} onTabChange={setTab} level={state.identity.level} streak={streak}>
+    <Layout 
+      activeTab={state.activeTab} 
+      onTabChange={setTab} 
+      level={state.identity.level} 
+      streak={streak}
+      onExport={exportToCSV}
+    >
       {renderContent()}
     </Layout>
   );

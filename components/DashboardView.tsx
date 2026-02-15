@@ -5,16 +5,16 @@ import { DayData, Task, Category } from '@/lib/types';
 
 interface DashboardProps {
   data: DayData;
-  onUpdate: (updater: (prev: DayData) => DayData) => void;
+  onUpdate: (updater: (prev: DayData) => DayData, changedTask?: Task) => void;
   identity: any;
 }
 
 export const DashboardView: React.FC<DashboardProps> = ({ data, onUpdate, identity }) => {
-  const toggleTask = (taskId: string) => {
+  const toggleTask = (task: Task) => {
     onUpdate(prev => ({
       ...prev,
-      tasks: prev.tasks.map(t => t.id === taskId ? { ...t, completed: !t.completed } : t)
-    }));
+      tasks: prev.tasks.map(t => t.id === task.id ? { ...t, completed: !t.completed } : t)
+    }), task);
   };
 
   const updateWater = (delta: number) => {
@@ -22,7 +22,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ data, onUpdate, identi
   };
 
   const sections = [Category.BODY, Category.MIND, Category.DEEN];
-  const completion = Math.round((data.tasks.filter(t => t.completed).length / data.tasks.length) * 100);
+  const completion = data.tasks.length > 0 ? Math.round((data.tasks.filter(t => t.completed).length / data.tasks.length) * 100) : 0;
 
   return (
     <div className="space-y-8 max-w-5xl">
@@ -86,7 +86,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ data, onUpdate, identi
               {data.tasks.filter(t => t.category === section).map(task => (
                 <button
                   key={task.id}
-                  onClick={() => toggleTask(task.id)}
+                  onClick={() => toggleTask(task)}
                   className={`w-full p-4 rounded-xl flex items-center justify-between border transition-all duration-300 group ${
                     task.completed 
                       ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400' 

@@ -12,6 +12,15 @@ export interface Task {
   completed: boolean;
 }
 
+export interface LogEntry {
+  timestamp: string;
+  date: string;
+  taskName: string;
+  category: string;
+  status: 'Completed' | 'Uncompleted';
+  xpGain: number;
+}
+
 export interface DayData {
   date: string;
   tasks: Task[];
@@ -30,6 +39,7 @@ export interface IdentityProfile {
 
 export interface AppState {
   history: Record<string, DayData>;
+  eventLog: LogEntry[];
   identity: IdentityProfile;
   activeTab: 'dashboard' | 'focus' | 'identity';
 }

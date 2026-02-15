@@ -1,8 +1,8 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { AppState, DayData, INITIAL_TASKS } from './types';
+import { AppState, DayData, INITIAL_TASKS, LogEntry, Task } from './types';
 
-const STORAGE_KEY = 'mastery_os_v3';
+const STORAGE_KEY = 'mastery_os_v4';
 
 const getTodayString = () => new Date().toISOString().split('T')[0];
 
@@ -10,12 +10,13 @@ export function useAppState() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [state, setState] = useState<AppState>({
     history: {},
+    eventLog: [],
     activeTab: 'dashboard',
     identity: {
       vision: "Architect of Excellence",
-      coreValues: ["Focus", "Integrity"],
-      nonNegotiables: ["Early rising"],
-      antiIdentity: ["Distraction"],
+      coreValues: ["Focus", "Integrity", "Discipline"],
+      nonNegotiables: ["Early rising", "Deep work", "No scrolling"],
+      antiIdentity: ["Complacency", "Escapism"],
       level: 1,
       xp: 0
     }
@@ -25,9 +26,10 @@ export function useAppState() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
-        setState(prev => ({ ...prev, ...JSON.parse(saved) }));
+        const parsed = JSON.parse(saved);
+        setState(prev => ({ ...prev, ...parsed, eventLog: parsed.eventLog || [] }));
       } catch (e) {
-        console.error("Failed to load state");
+        console.error("Failed to load state", e);
       }
     }
     setIsLoaded(true);
@@ -69,10 +71,25 @@ export function useAppState() {
     return count;
   }, [state.history, today]);
 
-  const updateToday = useCallback((updater: (prev: DayData) => DayData) => {
+  const updateToday = useCallback((updater: (prev: DayData) => DayData, changedTask?: Task) => {
     const updated = updater(currentDayData);
     const completedDiff = updated.tasks.filter(t => t.completed).length - currentDayData.tasks.filter(t => t.completed).length;
     
+    let newEventLog = [...state.eventLog];
+    
+    if (changedTask) {
+      const isCompleting = !changedTask.completed;
+      const newLogEntry: LogEntry = {
+        timestamp: new Date().toLocaleTimeString(),
+        date: today,
+        taskName: changedTask.label,
+        category: changedTask.category,
+        status: isCompleting ? 'Completed' : 'Uncompleted',
+        xpGain: isCompleting ? 10 : -10
+      };
+      newEventLog.push(newLogEntry);
+    }
+
     setState(prev => ({
       ...prev,
       identity: {
@@ -80,9 +97,38 @@ export function useAppState() {
         xp: Math.max(0, prev.identity.xp + (completedDiff * 10)),
         level: Math.floor(Math.max(0, prev.identity.xp + (completedDiff * 10)) / 500) + 1
       },
-      history: { ...prev.history, [today]: updated }
+      history: { ...prev.history, [today]: updated },
+      eventLog: newEventLog
     }));
-  }, [currentDayData, today]);
+  }, [currentDayData, today, state.eventLog]);
+
+  const exportToCSV = useCallback(() => {
+    if (state.eventLog.length === 0) {
+      alert("No activity recorded yet. Complete a task to generate logs.");
+      return;
+    }
+
+    const headers = ["Date", "Time", "Task Name", "Category", "Status", "XP Gain"];
+    const rows = state.eventLog.map(entry => [
+      entry.date,
+      entry.timestamp,
+      `"${entry.taskName.replace(/"/g, '""')}"`,
+      entry.category,
+      entry.status,
+      entry.xpGain
+    ]);
+
+    const csvString = [headers, ...rows].map(row => row.join(",")).join("\n");
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `mastery_log_${today}_${Date.now()}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [state.eventLog, today]);
 
   const setTab = (activeTab: AppState['activeTab']) => setState(p => ({ ...p, activeTab }));
   
@@ -90,5 +136,5 @@ export function useAppState() {
     setState(prev => ({ ...prev, identity: { ...prev.identity, ...identity } }));
   };
 
-  return { state, isLoaded, updateToday, currentDayData, setTab, updateIdentity, streak, today };
+  return { state, isLoaded, updateToday, currentDayData, setTab, updateIdentity, streak, today, exportToCSV };
 }

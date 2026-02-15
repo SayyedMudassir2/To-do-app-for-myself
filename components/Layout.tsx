@@ -5,7 +5,9 @@ import {
   Target, 
   Zap, 
   User, 
-  Flame
+  Flame,
+  FileSpreadsheet,
+  Download
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -14,6 +16,7 @@ interface LayoutProps {
   children: React.ReactNode;
   level: number;
   streak: number;
+  onExport: () => void;
 }
 
 const NavItem = ({ icon: Icon, label, id, active, onClick }: any) => (
@@ -28,7 +31,7 @@ const NavItem = ({ icon: Icon, label, id, active, onClick }: any) => (
   </button>
 );
 
-export const Layout: React.FC<LayoutProps> = ({ activeTab, onTabChange, children, level, streak }) => {
+export const Layout: React.FC<LayoutProps> = ({ activeTab, onTabChange, children, level, streak, onExport }) => {
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-black">
       {/* Sidebar - Desktop */}
@@ -47,6 +50,16 @@ export const Layout: React.FC<LayoutProps> = ({ activeTab, onTabChange, children
           <NavItem id="dashboard" label="Dashboard" icon={LayoutDashboard} active={activeTab === 'dashboard'} onClick={onTabChange} />
           <NavItem id="focus" label="Deep Work" icon={Target} active={activeTab === 'focus'} onClick={onTabChange} />
           <NavItem id="identity" label="Identity" icon={User} active={activeTab === 'identity'} onClick={onTabChange} />
+          
+          <div className="pt-4 mt-4 border-t border-zinc-900">
+            <button
+              onClick={onExport}
+              className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 w-full text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/5 border border-transparent hover:border-emerald-500/20 group"
+            >
+              <FileSpreadsheet size={20} className="group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium">Export Log</span>
+            </button>
+          </div>
         </nav>
 
         <div className="mt-auto p-4 rounded-xl glass border-emerald-500/20 flex items-center gap-3">
@@ -75,6 +88,13 @@ export const Layout: React.FC<LayoutProps> = ({ activeTab, onTabChange, children
             <h2 className="text-xl font-bold capitalize">{activeTab}</h2>
           </div>
           <div className="flex items-center gap-4">
+             <button 
+                onClick={onExport}
+                className="p-2 rounded-lg bg-zinc-900 text-emerald-500 border border-zinc-800 hover:bg-zinc-800"
+                title="Export Log"
+             >
+               <FileSpreadsheet size={18} />
+             </button>
              <div className="flex items-center gap-2 bg-zinc-900 rounded-full px-3 py-1 border border-zinc-800">
                <Flame size={16} className={streak > 0 ? "text-orange-500" : "text-zinc-600"} />
                <span className="text-sm font-bold">{streak} Day Streak</span>

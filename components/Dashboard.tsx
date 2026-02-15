@@ -5,16 +5,16 @@ import { DayData, Task, Category } from '../types';
 
 interface DashboardProps {
   data: DayData;
-  onUpdate: (updater: (prev: DayData) => DayData) => void;
+  onUpdate: (updater: (prev: DayData) => DayData, task?: Task) => void;
   identity: any;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ data, onUpdate, identity }) => {
-  const toggleTask = (taskId: string) => {
+  const toggleTask = (task: Task) => {
     onUpdate(prev => ({
       ...prev,
-      tasks: prev.tasks.map(t => t.id === taskId ? { ...t, completed: !t.completed } : t)
-    }));
+      tasks: prev.tasks.map(t => t.id === task.id ? { ...t, completed: !t.completed } : t)
+    }), task);
   };
 
   const updateWater = (val: number) => {
@@ -22,7 +22,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onUpdate, identity }
   };
 
   const sections = [Category.BODY, Category.MIND, Category.DEEN];
-  const completionPercentage = Math.round((data.tasks.filter(t => t.completed).length / data.tasks.length) * 100);
+  const completionPercentage = data.tasks.length > 0 ? Math.round((data.tasks.filter(t => t.completed).length / data.tasks.length) * 100) : 0;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -101,7 +101,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, onUpdate, identity }
               {data.tasks.filter(t => t.category === section).map(task => (
                 <button
                   key={task.id}
-                  onClick={() => toggleTask(task.id)}
+                  onClick={() => toggleTask(task)}
                   className={`w-full p-4 rounded-xl flex items-center justify-between transition-all group ${
                     task.completed 
                     ? 'bg-emerald-500/10 border border-emerald-500/30' 
